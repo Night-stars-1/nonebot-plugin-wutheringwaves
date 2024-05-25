@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "nonebot-plugin-wutheringwaves"
+version = "0.1.0"
+description = ""
+authors = ["Night-stars-1 <nujj1042633805@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+nonebot-plugin-apscheduler = "^0.4.0"
+nonebot-plugin-send-anything-anywhere = "^0.6.1"
+nonebot2 = {extras = ["fastapi"], version = "^2.3.1"}
+nonebot-adapter-onebot = "^2.4.3"
+nonebot-adapter-console = "^0.5.0"
+httpx = "^0.27.0"
+
+[tool.poetry.group.test.dependencies]
+nonebug = "^0.3.7"
+pytest-asyncio = "^0.23.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.nonebot]
+adapters = [
+    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" },
+    { name = "Console", module_name = "nonebot.adapters.console" }
+]
+plugins = []
+plugin_dirs = ["src"]
+builtin_plugins = []
+
