@@ -23,7 +23,7 @@ __all__ = [
     "GeneralPrivateMessageEvent",
     "GeneralGroupMessageEvent",
     "is_valid_mobile",
-    "mask_mobile"
+    "mask_mobile",
 ]
 
 GeneralMessageEvent = Union[OneBotV11MessageEvent, ConsoleMessageEvent]

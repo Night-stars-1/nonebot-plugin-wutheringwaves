@@ -16,9 +16,7 @@ CONFIG_PATH = DATA_PATH / "config.json"
 
 class GeetestModel(BaseModel):
     geetest_url: str = ""
-    geetest_params: dict = {
-        "gt": "{gt}"
-    }
+    geetest_params: dict = {"gt": "{gt}"}
 
 
 class UsersModel(BaseModel):
@@ -26,10 +24,11 @@ class UsersModel(BaseModel):
     token: str
     platform: str = "qq"
 
+
 class Config(BaseModel):
     geetest: GeetestModel = GeetestModel()
     users: Dict[str, UsersModel] = {}
-    '''所有用户数据'''
+    """所有用户数据"""
 
     def save(self):
         """
@@ -43,6 +42,7 @@ class Config(BaseModel):
         with open(CONFIG_PATH, "w", encoding="utf-8") as f:
             f.write(str_data)
         return True
+
 
 if CONFIG_PATH.exists() and CONFIG_PATH.is_file():
     with open(CONFIG_PATH, "r", encoding="utf-8") as f:

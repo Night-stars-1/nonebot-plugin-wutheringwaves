@@ -16,4 +16,3 @@ def load_bot():
 
     # 加载插件
     nonebot.load_from_toml("pyproject.toml")
-

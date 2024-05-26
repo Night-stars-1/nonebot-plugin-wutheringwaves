@@ -17,6 +17,7 @@ from nonebug import App
 
 from .utils import make_event
 
+
 @pytest.mark.asyncio
 async def test_login(app: App):
     from src.nonebot_plugin_wutheringwaves.command.login import login
@@ -37,6 +38,7 @@ async def test_login(app: App):
         ctx.receive_event(bot, event)
         ctx.should_call_send(event, "123")
         ctx.should_finished(login)
+
 
 @pytest.mark.asyncio
 async def test_code(app: App):
