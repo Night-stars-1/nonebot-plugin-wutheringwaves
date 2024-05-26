@@ -28,5 +28,8 @@ jobs:
       - name: Run build
         run: poetry build
 
+      - name: Configure TestPyPI repository
+        run: poetry config repositories.testpypi https://test.pypi.org/legacy/
+
       - name: Publish Python Package
         run: poetry publish -r testpypi
