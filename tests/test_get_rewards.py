@@ -12,23 +12,10 @@ LastEditTime: 2024-05-25 15:44:41
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
 """
 
-from datetime import datetime
-
 import pytest
-from nonebot import logger
-from nonebot.adapters.console import Event, Message, MessageEvent
 from nonebug import App
-from nonechat.info import User
 
-
-def make_event(message: str = "") -> MessageEvent:
-    return MessageEvent(
-        time=datetime.now(),
-        self_id="test",
-        message=Message(message),
-        user=User(id=123456789),
-    )
-
+from .utils import make_event
 
 @pytest.mark.asyncio
 async def test_login(app: App):
@@ -50,3 +37,24 @@ async def test_login(app: App):
         ctx.receive_event(bot, event)
         ctx.should_call_send(event, "123")
         ctx.should_finished(login)
+
+@pytest.mark.asyncio
+async def test_code(app: App):
+    from src.nonebot_plugin_wutheringwaves.command.login import code
+
+    async with app.test_matcher(code) as ctx:
+        bot = ctx.create_bot()
+        event = make_event("/验证码")
+        ctx.receive_event(bot, event)
+        ctx.should_call_send(event, "请输入手机号")
+        ctx.should_rejected(code)
+
+        event = make_event("12345678975")
+        ctx.receive_event(bot, event)
+        ctx.should_call_send(event, "短信验证码已发送，请查收")
+        ctx.should_call_send(event, "请输入验证码")
+
+        event = make_event("123")
+        ctx.receive_event(bot, event)
+        ctx.should_call_send(event, "123")
+        ctx.should_finished(code)

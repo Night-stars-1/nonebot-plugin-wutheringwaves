@@ -1,19 +1,21 @@
 """
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2024-05-25 01:10:28
-LastEditTime: 2024-05-26 02:13:00
+LastEditTime: 2024-05-26 19:30:10
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
 """
 
-from typing import Dict, List, Optional, Set, Tuple, Type
+from datetime import datetime
+from typing import Set, Type
 
 import httpx
 from nonebot import logger
 
-from ..model import Award, BaseApiStatus
+from ..model.requests import GetRewardsResultHandler, SignResultHandler
 
 AVAILABLE_GAME_SIGNS: Set[Type["BaseGameSign"]] = set()
 """可用的子类"""
+
 
 class BaseGameSign:
     """
@@ -24,7 +26,7 @@ class BaseGameSign:
     """游戏名字"""
 
     url_reward = "https://api.kurobbs.com/encourage/signIn/initSignInV2"
-    url_sign = "https://api.kurobbs.com/encourage/signIn/initSignInV2"
+    url_sign = "https://api.kurobbs.com/encourage/signIn/v2"
 
     game_id = "0"
     server_id = "0"
@@ -54,8 +56,10 @@ class BaseGameSign:
             "priority": "u=1, i",
         }
 
-    async def get_rewards(self) -> Tuple[BaseApiStatus, Optional[Dict[int, Award]]]:
-
+    async def get_rewards(self):
+        """
+        获取签到信息
+        """
         data = {
             "gameId": self.game_id,
             "serverId": self.server_id,
@@ -69,7 +73,29 @@ class BaseGameSign:
             )
 
         data = response.json()
-        logger.info(data)
+        logger.debug(data)
+        return GetRewardsResultHandler.model_validate(data)
+
+    async def sign(self):
+        """
+        签到
+        """
+        now = datetime.now()
+        req_month = now.strftime("%m")
+        data = {
+            "gameId": self.game_id,
+            "serverId": self.server_id,
+            "roleId": self.role_id,
+            "userId": self.user_id,
+            "reqMonth": req_month,
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(self.url_sign, data=data, headers=self.headers)
+
+        data = response.json()
+        logger.debug(data)
+        return SignResultHandler.model_validate(data)
 
 
 class WutheringWaves(BaseGameSign):

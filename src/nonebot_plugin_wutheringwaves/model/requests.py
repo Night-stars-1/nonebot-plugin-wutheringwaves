@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, List, Optional
 from pydantic import BaseModel
 
 
@@ -17,7 +17,14 @@ class ApiResultHandler(BaseModel):
     """需要进行人机验证"""
 
     def __bool__(self):
-        return self.success
+        return self.success and self.code == 200
+
+    @property
+    def login_expired(self):
+        """
+        登录过期
+        """
+        return self.code == 220
 
 
 class GetSmsCodeResultHandler(ApiResultHandler):
@@ -38,9 +45,6 @@ class GetSmsCodeResultHandler(ApiResultHandler):
         else:
             self.success = False
             self.need_verify = True
-
-    def __bool__(self):
-        return self.success and self.code == 200
 
 
 class GeetestResultHandler(ApiResultHandler):
@@ -111,14 +115,12 @@ class LoginResultHandler(ApiResultHandler):
         """是否注销"""
         token: str
         """登录凭证"""
+
     msg: str
     data: Optional[DataModel] = None
 
     def __init__(self, **data):
         super().__init__(**data)
-
-    def __bool__(self):
-        return self.success and self.code == 200
 
     @property
     def code_error(self):
@@ -126,3 +128,107 @@ class LoginResultHandler(ApiResultHandler):
         验证码错误
         """
         return self.code == 130
+
+
+class GetRewardsResultHandler(ApiResultHandler):
+    """
+    获取签到数据处理器
+    """
+
+    class GoodsConfigModel(BaseModel):
+        goodsId: int
+        """奖励ID"""
+        goodsName: str
+        """奖励名称"""
+        goodsNum: int
+        """奖励数量"""
+        goodsUrl: str
+        """奖励链接"""
+
+    class DataModel(BaseModel):
+        disposableGoodsList: List["GetRewardsResultHandler.GoodsConfigModel"]
+        """一次性奖励列表"""
+        disposableSignNum: int
+        """一次性签到次数"""
+        eventEndTimes: str
+        """活动结束时间"""
+        eventStartTimes: str
+        """活动开始时间"""
+        expendGold: int
+        """消耗金币"""
+        expendNum: int
+        """消耗次数"""
+        isSigIn: bool
+        """是否签到"""
+        nowServerTimes: str
+        """当前服务器时间"""
+        omissionNnm: int
+        """漏签次数"""
+        openNotifica: bool
+        """打开通知"""
+        redirectContent: str
+        """重定向内容"""
+        redirectText: str
+        """重定向文本"""
+        redirectType: int
+        """重定向类型"""
+        repleNum: int
+        """补签次数"""
+        sigInNum: int
+        """签到次数"""
+        signInGoodsConfigs: List["GetRewardsResultHandler.GoodsConfigModel"]
+        """签到奖励列表"""
+        signLoopGoodsList: list
+        """循环签到奖励列表"""
+
+    msg: str
+    data: Optional[DataModel] = None
+    goods_config: Optional[Dict[int, GoodsConfigModel]] = None
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        if self.code == 200:
+            self.success = True
+            self.goods_config = {
+                item.goodsId: item for item in self.data.signInGoodsConfigs
+            }
+            for item in self.data.disposableGoodsList:
+                self.goods_config[item.goodsId] = item
+        else:
+            self.success = False
+
+
+class SignResultHandler(ApiResultHandler):
+    """
+    签到数据处理器
+    """
+
+    class GoodsModel(BaseModel):
+        goodsId: int
+        """奖励ID"""
+        goodsNum: int
+        """奖励数量"""
+        goodsUrl: str
+        """奖励链接"""
+        type: int
+        """类型"""
+
+    class DataModel(BaseModel):
+        todayList: List["SignResultHandler.GoodsModel"]
+        """今日奖励列表"""
+        tomorrowList: List["SignResultHandler.GoodsModel"]
+        """明日奖励列表"""
+
+    msg: str
+    data: Optional[DataModel] = None
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        if self.code == 200:
+            self.success = True
+        else:
+            self.success = False
+
+    @property
+    def is_signed_in(self):
+        return self.code == 1511

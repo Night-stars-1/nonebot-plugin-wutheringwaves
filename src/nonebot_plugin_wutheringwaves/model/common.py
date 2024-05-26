@@ -1,7 +1,7 @@
 """
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2024-05-24 22:03:51
-LastEditTime: 2024-05-25 22:21:14
+LastEditTime: 2024-05-26 17:35:38
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
 """
 
@@ -9,7 +9,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-__all__ = ["CommandUsage", "Award", "BaseApiStatus", "GetSmsCodeStatus"]
+__all__ = ["CommandUsage", "BaseApiStatus", "GetSmsCodeStatus"]
 
 
 class CommandUsage(BaseModel):
@@ -20,19 +20,6 @@ class CommandUsage(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     usage: Optional[str] = None
-
-
-class Award(BaseModel):
-    """
-    签到奖励数据
-    """
-
-    name: str
-    """签到获得的物品名称"""
-    icon: str
-    """物品图片链接"""
-    cnt: int
-    """物品数量"""
 
 
 class BaseApiStatus(BaseModel):
