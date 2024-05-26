@@ -6,9 +6,14 @@ on:
     types: [published]
 
 jobs:
-  black-check:
+  publish-python:
+    name: Publish release to PyPI
     runs-on: ubuntu-latest
-
+    environment:
+      name: pypi
+      url: https://pypi.org/p/nonebot-plugin-wutheringwaves
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.6
@@ -28,8 +33,7 @@ jobs:
       - name: Run build
         run: poetry build
 
-      - name: Configure TestPyPI repository
-        run: poetry config repositories.testpypi https://test.pypi.org/legacy/
-
-      - name: Publish Python Package
-        run: poetry publish -r testpypi
+      - name: Publish package distributions to TestPyPI
+        uses: pypa/gh-action-pypi-publish@v1.8.14
+        with:
+          repository-url: https://test.pypi.org/legacy/
