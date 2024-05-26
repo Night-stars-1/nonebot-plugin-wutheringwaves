@@ -30,3 +30,6 @@ jobs:
 
       - name: Run black
         run: poetry run black --check .
+
+      - name: Run build
+        run: poetry build
