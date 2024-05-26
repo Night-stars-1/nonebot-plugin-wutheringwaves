@@ -23,6 +23,10 @@ black = "^24.4.2"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.poetry.urls]
+homepage = "https://github.com/Night-stars-1"
+repository = "https://github.com/Night-stars-1/nonebot-plugin-wutheringwaves"
+
 [tool.nonebot]
 adapters = [
     { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" },
