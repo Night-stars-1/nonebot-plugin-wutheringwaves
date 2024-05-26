@@ -16,14 +16,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.6
 
+      - name: Install poetry
+        run: pip install poetry
+
       - name: Set up Python
         uses: actions/setup-python@v5.1.0
         with:
           python-version: "3.11"
           cache: "poetry"
-
-      - name: Install poetry
-        run: pip install poetry
 
       - name: Install dependencies
         run: poetry install --with test
