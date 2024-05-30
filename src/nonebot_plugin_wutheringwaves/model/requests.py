@@ -233,10 +233,12 @@ class SignResultHandler(ApiResultHandler):
     def is_signed_in(self):
         return self.code == 1511
 
+
 class TaskProcessResultHandler(ApiResultHandler):
     """
     获取任务进度数据处理器
     """
+
     class TaskList(BaseModel):
         name: str
         """任务名称"""
@@ -294,10 +296,12 @@ class TaskProcessResultHandler(ApiResultHandler):
             )
         return task_list
 
+
 class TotalGoldResultHandler(ApiResultHandler):
     """
     获取金币数据处理器
     """
+
     class DataModel(BaseModel):
         goldNum: int
         """金币数量"""
@@ -312,10 +316,12 @@ class TotalGoldResultHandler(ApiResultHandler):
     def gold(self):
         return self.data.goldNum
 
+
 class LikeResultHandler(ApiResultHandler):
     """
     点赞数据处理器
     """
+
     class DataModel(BaseModel):
         likeNum: int
         """点赞数量"""
@@ -326,6 +332,7 @@ class LikeResultHandler(ApiResultHandler):
     def __init__(self, **data):
         super().__init__(**data)
         self.success = self.data
+
 
 class ForumListResultHandler(ApiResultHandler):
     """
