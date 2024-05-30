@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-wutheringwaves"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Night-stars-1 <nujj1042633805@gmail.com>"]
 readme = "README.md"
