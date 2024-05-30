@@ -9,3 +9,4 @@ from .common import *
 from .login import *
 from .sign import *
 from .strategy import *
+from .task import *

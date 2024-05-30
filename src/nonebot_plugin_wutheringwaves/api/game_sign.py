@@ -1,7 +1,7 @@
 """
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2024-05-25 01:10:28
-LastEditTime: 2024-05-26 19:30:10
+LastEditTime: 2024-05-30 23:58:40
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
 """
 
@@ -11,7 +11,8 @@ from typing import Set, Type
 import httpx
 from nonebot import logger
 
-from ..model.requests import GetRewardsResultHandler, SignResultHandler
+from ..model.requests import RewardsResultHandler, SignResultHandler
+from .task_process import TaskProcessSign
 
 AVAILABLE_GAME_SIGNS: Set[Type["BaseGameSign"]] = set()
 """可用的子类"""
@@ -33,6 +34,7 @@ class BaseGameSign:
     role_id = "0"
 
     def __init__(self, token: str, user_id: str) -> None:
+        self.token = token
         self.user_id = user_id
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Linux; Android 14; 22081212C Build/UKQ1.230917.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.179 Mobile Safari/537.36 Kuro/2.2.0 KuroGameBox/2.2.0",
@@ -75,12 +77,11 @@ class BaseGameSign:
 
         data = response.json()
         logger.debug(data)
-        return GetRewardsResultHandler.model_validate(data)
+        return RewardsResultHandler.model_validate(data)
 
     async def sign(self):
         """
-        说明:
-            签到
+        游戏签到
         """
         now = datetime.now()
         req_month = now.strftime("%m")
@@ -98,6 +99,11 @@ class BaseGameSign:
         data = response.json()
         logger.debug(data)
         return SignResultHandler.model_validate(data)
+
+    async def user_sign(self):
+        """库街区签到"""
+        task_obj = TaskProcessSign(token=self.token, user_id=self.user_id)
+        return task_obj.sign(self.game_id)
 
 
 class WutheringWaves(BaseGameSign):

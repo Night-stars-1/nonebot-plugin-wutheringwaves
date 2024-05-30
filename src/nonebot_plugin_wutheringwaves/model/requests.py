@@ -130,7 +130,7 @@ class LoginResultHandler(ApiResultHandler):
         return self.code == 130
 
 
-class GetRewardsResultHandler(ApiResultHandler):
+class RewardsResultHandler(ApiResultHandler):
     """
     获取签到数据处理器
     """
@@ -146,7 +146,7 @@ class GetRewardsResultHandler(ApiResultHandler):
         """奖励链接"""
 
     class DataModel(BaseModel):
-        disposableGoodsList: List["GetRewardsResultHandler.GoodsConfigModel"]
+        disposableGoodsList: List["RewardsResultHandler.GoodsConfigModel"]
         """一次性奖励列表"""
         disposableSignNum: int
         """一次性签到次数"""
@@ -176,7 +176,7 @@ class GetRewardsResultHandler(ApiResultHandler):
         """补签次数"""
         sigInNum: int
         """签到次数"""
-        signInGoodsConfigs: List["GetRewardsResultHandler.GoodsConfigModel"]
+        signInGoodsConfigs: List["RewardsResultHandler.GoodsConfigModel"]
         """签到奖励列表"""
         signLoopGoodsList: list
         """循环签到奖励列表"""
@@ -232,3 +232,126 @@ class SignResultHandler(ApiResultHandler):
     @property
     def is_signed_in(self):
         return self.code == 1511
+
+class TaskProcessResultHandler(ApiResultHandler):
+    """
+    获取任务进度数据处理器
+    """
+    class TaskList(BaseModel):
+        name: str
+        """任务名称"""
+        num: int
+        """任务剩余次数"""
+        gold: int
+        """任务奖励金币"""
+
+    class TaskModel(BaseModel):
+        completeTimes: int
+        """完成次数"""
+        gainGold: int
+        """奖励金币"""
+        needActionTimes: int
+        """需要操作次数"""
+        process: float
+        """进度"""
+        remark: str
+        """备注"""
+        skipType: int
+        """跳过类型"""
+        times: int
+        """次数"""
+
+    class DataModel(BaseModel):
+        currentDailyGold: int
+        """当前每日金币"""
+        growTask: List["TaskProcessResultHandler.TaskModel"]
+        """成长任务"""
+        dailyTask: List["TaskProcessResultHandler.TaskModel"]
+        """每日任务"""
+        maxDailyGold: int
+        """最大每日金币"""
+
+    msg: str
+    data: Optional[DataModel] = None
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        if self.code == 200:
+            self.success = True
+        else:
+            self.success = False
+
+    @property
+    def task_list(self):
+        task_list: List["TaskProcessResultHandler.TaskList"] = []
+        for task in self.data.dailyTask:
+            task_list.append(
+                self.TaskList(
+                    name=task.remark,
+                    num=task.needActionTimes - task.completeTimes,
+                    gold=task.gainGold,
+                )
+            )
+        return task_list
+
+class TotalGoldResultHandler(ApiResultHandler):
+    """
+    获取金币数据处理器
+    """
+    class DataModel(BaseModel):
+        goldNum: int
+        """金币数量"""
+
+    msg: str
+    data: Optional[DataModel] = None
+
+    def __init__(self, **data):
+        super().__init__(**data)
+
+    @property
+    def gold(self):
+        return self.data.goldNum
+
+class LikeResultHandler(ApiResultHandler):
+    """
+    点赞数据处理器
+    """
+    class DataModel(BaseModel):
+        likeNum: int
+        """点赞数量"""
+
+    msg: str
+    data: bool
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.success = self.data
+
+class ForumListResultHandler(ApiResultHandler):
+    """
+    推荐文章数据处理器
+    """
+
+    class PostModel(BaseModel):
+        gameForumId: int
+        gameId: int
+        isLike: int
+        isLock: int
+        postId: str
+        postTitle: str
+        postType: int
+        userId: str
+
+    class DataModel(BaseModel):
+        postList: List["ForumListResultHandler.PostModel"]
+        """文章列表"""
+
+    msg: str
+    data: DataModel
+
+    def __init__(self, **data):
+        super().__init__(**data)
+
+    @property
+    def post_list(self):
+        return self.data.postList

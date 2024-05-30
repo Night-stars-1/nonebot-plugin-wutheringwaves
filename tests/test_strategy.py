@@ -1,7 +1,7 @@
 """
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2024-05-30 21:19:58
-LastEditTime: 2024-05-30 21:42:33
+LastEditTime: 2024-05-30 22:56:36
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
 """
 
@@ -12,7 +12,7 @@ from .utils import make_event
 
 
 @pytest.mark.asyncio
-async def test_sign(app: App):
+async def test_strategy(app: App):
     from src.nonebot_plugin_wutheringwaves.command import strategy
     from src.nonebot_plugin_wutheringwaves.utils import RESOURCES
 
