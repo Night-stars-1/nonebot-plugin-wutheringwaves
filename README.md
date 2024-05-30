@@ -22,3 +22,6 @@
   - 进行短信登录
 - /签到
   - 进行鸣潮签到
+
+## 特别鸣谢
+- 感谢[moealkyne](https://www.kurobbs.com/person-center?id=10422445)提供的一图流攻略
