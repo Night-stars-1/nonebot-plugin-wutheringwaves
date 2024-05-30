@@ -86,7 +86,8 @@ async def get_sms_code_by_captcha(mobile: str):
 
 async def login_by_code(code: str, mobile: str):
     """
-    通过短信验证码登录
+    说明:
+        通过短信验证码登录
     """
     data = {
         "code": code,

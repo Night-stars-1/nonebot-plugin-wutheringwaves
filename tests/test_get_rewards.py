@@ -5,13 +5,6 @@ LastEditTime: 2024-05-26 02:21:56
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
 """
 
-"""
-Author: Night-stars-1 nujj1042633805@gmail.com
-Date: 2024-05-25 14:57:57
-LastEditTime: 2024-05-25 15:44:41
-LastEditors: Night-stars-1 nujj1042633805@gmail.com
-"""
-
 import pytest
 from nonebug import App
 

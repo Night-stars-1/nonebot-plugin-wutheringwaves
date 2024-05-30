@@ -58,7 +58,8 @@ class BaseGameSign:
 
     async def get_rewards(self):
         """
-        获取签到信息
+        说明:
+            获取签到信息
         """
         data = {
             "gameId": self.game_id,
@@ -78,7 +79,8 @@ class BaseGameSign:
 
     async def sign(self):
         """
-        签到
+        说明:
+            签到
         """
         now = datetime.now()
         req_month = now.strftime("%m")

@@ -1,11 +1,14 @@
 """
 Author: Night-stars-1 nujj1042633805@gmail.com
 Date: 2024-05-24 22:06:22
-LastEditTime: 2024-05-25 22:14:23
+LastEditTime: 2024-05-30 19:19:56
 LastEditors: Night-stars-1 nujj1042633805@gmail.com
 """
 
-from typing import Union
+from ast import alias
+import json
+from pathlib import Path
+from typing import Dict, List, Union
 
 import httpx
 from loguru import logger
@@ -24,7 +27,14 @@ __all__ = [
     "GeneralGroupMessageEvent",
     "is_valid_mobile",
     "mask_mobile",
+    "RESOURCES",
+    "get_role_name",
 ]
+
+ROOT_PATH = Path(__file__).resolve().parent.parent
+"""NoneBot2 机器人根目录"""
+RESOURCES = ROOT_PATH / "resources"
+"""资源目录"""
 
 GeneralMessageEvent = Union[OneBotV11MessageEvent, ConsoleMessageEvent]
 """消息事件类型"""
@@ -32,6 +42,15 @@ GeneralPrivateMessageEvent = PrivateMessageEvent, ConsoleMessageEvent
 """私聊消息事件类型"""
 GeneralGroupMessageEvent = GroupMessageEvent, ConsoleMessageEvent
 """群聊消息事件类型"""
+
+
+def read_json(path: Union[str, Path]):
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    return data
+
+
+ROLE_ALIAS_LIST: Dict[str, List[str]] = read_json(RESOURCES / "role_alias.json")
 
 
 async def get_validate_v4():
@@ -57,14 +76,16 @@ async def get_validate_v4():
 
 def is_valid_mobile(mobile: str):
     """
-    检查手机号是否有效（只包含数字且长度为11位）
+    说明:
+        检查手机号是否有效（只包含数字且长度为11位）
     """
     return mobile.isdigit() and len(mobile) == 11
 
 
 def mask_mobile(mobile: str):
     """
-    模糊手机号
+    说明:
+        模糊手机号
     """
     if is_valid_mobile(mobile):
         # 将中间4位数字用星号替换
@@ -72,3 +93,16 @@ def mask_mobile(mobile: str):
         return masked_number
     else:
         return None
+
+
+def get_role_name(name: str):
+    """
+    说明:
+        通过别名获取角色名称
+    参数:
+        :param name 别名
+    """
+    for role_name, alias_name in ROLE_ALIAS_LIST.items():
+        if name in alias_name:
+            return role_name
+    return name

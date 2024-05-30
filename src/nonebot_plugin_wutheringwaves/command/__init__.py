@@ -8,3 +8,4 @@ LastEditors: Night-stars-1 nujj1042633805@gmail.com
 from .common import *
 from .login import *
 from .sign import *
+from .strategy import *
